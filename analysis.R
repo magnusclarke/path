@@ -1,10 +1,10 @@
-source('/home/magnus/Desktop/apetopeth/a2p.R')
+source('a2p.R')
 source('path.R')
 
 get_path = function(m) 
 {
 	dat = sim(m, path)
-	dat = matrix( unlist(dat), ncol=2, byrow=T )
+t
 	return(dat[,1])
 }
 
@@ -25,7 +25,7 @@ m = (ape2peth(t))
 ape_cor = cov2cor(vcv(t))
 
 # Get VCV matrix of many reps of bm simulations on tree
-d = replicate(1e2, sim(m, bm))
+d = replicate(1e2, sim(m, bm)[,1])
 
 # Get vcv matrix of path simulations on tree
 p = replicate(1e2, get_path(m))

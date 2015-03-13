@@ -117,7 +117,7 @@ ape2peth = function(tree)
 }
 
 # BM simulation on a peth tree; returns data with ape ordering
-# Deprecated: use sim(tree, bm)
+# Deprecated. Use sim(tree, bm)
 sim_bm = function(tree, sigma=1) 
 {
 	dat = 0				# root trait value
@@ -138,7 +138,7 @@ sim_bm = function(tree, sigma=1)
 
 bm = function(dat, sigma=1, time)
 {
-	return( unlist(lapply(dat, function(x) x = x + (sqrt(time)*sigma*rnorm(1))) ) )
+	return( (lapply(dat, function(x) x = x + (sqrt(time)*sigma*rnorm(1))) ) )
 }
 
 # Simulate data, given tree in peth format, according to arbitrary evolution function
@@ -146,8 +146,14 @@ bm = function(dat, sigma=1, time)
 # the time period to simulate, and return a vector of length n
 sim = function(tree, FUN, visualise=FALSE) 
 {
-	if(identical(FUN, bm))		dat = 0				# root trait value
-	if(identical(FUN, path))	dat = list(c(0,0))	# root trait values
+	if(identical(FUN, bm))
+	{
+		dat = 0					# root trait value
+		nTraits=1				
+	} else if(identical(FUN, path)){
+		dat = list(c(0,0))		# root trait value
+		nTraits=2
+	}
 	# if(identical(FUN, path))	dat = matrix(c(0,0), ncol=2)	# root trait values
 
 
@@ -158,9 +164,11 @@ sim = function(tree, FUN, visualise=FALSE)
 	for(i in 1:nperiod)
 	{
 		dat = c(dat, dat[tree$splitting_nodes[i]])
-		dat = FUN(dat, time=tts[i], visualise=visualise)
+		dat = FUN(dat, time=tts[i])#, visualise=visualise)
 	}
-	return(dat[dord])
+	dat = dat[dord]
+	dat = matrix( unlist(dat), ncol=nTraits, byrow=T )
+	return(dat)
 }
 
 
