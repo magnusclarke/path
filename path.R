@@ -4,7 +4,7 @@ bits = 200
 limit = bits/2
 offset = bits / 2 				# Put zero in centre of plot
 
-rate = bits/75
+rate = bits/150
 
 
 gen_species = function(n)
@@ -21,12 +21,36 @@ gen_species = function(n)
 
 # x = matrix(0, nrow=bits, ncol=bits)
 
+fitness_map = matrix(1, nrow = bits, ncol=bits)
+fitness_map[30:45, ] = 0	# Block off part of trait space!
+fitness_map[,30:45 ] = 0	
+
 # Evolve a species randomly (BM)
 step_species = function(lspecies)
 {
 	for(i in 1:length(lspecies))
 	{
-		lspecies[[i]] = lspecies[[i]] + as.integer(rate*rnorm(2))
+		# Create a trial evolutionary step, and accept with likelihood
+		# proportional  to fitness of new traits.
+	accept=F
+		while(accept==FALSE)
+		{
+			accept = FALSE
+			change = as.integer(rate * rnorm(2))	
+			new_state = lspecies[[i]] + change
+			new_fitness = fitness_map[new_state]
+			# Accept with likelihood = fitness, IF doesn't go out of grid
+			if(new_fitness > runif(1) && all(abs(new_state)<limit))
+			{
+				accept = TRUE
+			}
+			if(accept==TRUE)
+			{
+				lspecies[[i]] = new_state
+			}
+		}
+
+		#lspecies[[i]] = lspecies[[i]] + as.integer(rate*rnorm(2))
 	}
 	return(lspecies)
 }

@@ -4,7 +4,7 @@ source('path.R')
 get_path = function(m) 
 {
 	dat = sim(m, path)
-t
+
 	return(dat[,1])
 }
 

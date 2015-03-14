@@ -1,6 +1,6 @@
 library(ape)
 library(TESS)
-source('~/Desktop/path/path.R')
+source('path.R')
 
 # random ultrametric tree
 rUMT	= function(nt, lambda=1, mu=0)
@@ -144,14 +144,16 @@ bm = function(dat, sigma=1, time)
 # Simulate data, given tree in peth format, according to arbitrary evolution function
 # Evolution function must take a vector of length n and 
 # the time period to simulate, and return a vector of length n
-sim = function(tree, FUN, visualise=FALSE) 
+# It will be more efficient in time to make the fitness matrix only once for the whole
+# tree evolution. That'll mean integrating this fn with the actual path fn.
+sim = function(tree, FUN, visualise=FALSE, root=50)
 {
 	if(identical(FUN, bm))
 	{
-		dat = 0					# root trait value
+		dat = root					# root trait value
 		nTraits=1				
 	} else if(identical(FUN, path)){
-		dat = list(c(0,0))		# root trait value
+		dat = list(c(root,root))		# root trait value
 		nTraits=2
 	}
 	# if(identical(FUN, path))	dat = matrix(c(0,0), ncol=2)	# root trait values
