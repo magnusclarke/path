@@ -2,18 +2,18 @@
 #define __TREE_H__
 
 #include <vector>
-
 using std::vector;
 
-class tree
+
+class Tree
 {
-
-
+	int num_tips;			        // = length(speciators)+1 I think
 
 public:
-
-
+	vector<double> intervals;		// Time periods between speciation events
+	double total_time;
+	vector<int> speciators;			// Order of splitting lines
+	int num_traits;					// Number of traits = 2 for now.
 };
-
 
 #endif
