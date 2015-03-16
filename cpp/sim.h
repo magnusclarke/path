@@ -8,9 +8,10 @@ using std::vector;
 
 class Sim
 {
+	// Tree tree;
+	int num_tips;
 	double dt;	
 	double rate; 						// BM sigma^2
-	vector<vector<double> > tval;		// trait values, intially 2x2
 	int total_time_steps;				// total time / dt for clade	
 	int fitness_size;					// size of 1 dim of fitness matrix
 	vector<vector<double> > fitness;	// fitness matrix ; bm : all=1
@@ -31,6 +32,10 @@ class Sim
 	void step_map();
 	
 public:
+
+	vector<vector<double> > tval;		// trait values, intially 1x1
+
+
 	/* Take dt, rate, fitness matrix 1dim length, and intial fitness matrix as one
 	linear array. Then need to split that array into square matrix */
 	void set_values(double&, double&, int&, double[], Tree&); 

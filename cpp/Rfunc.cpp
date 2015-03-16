@@ -4,7 +4,7 @@
 #include "tree.h"
 #include "sim.h"
 
-extern "C" void pathsim(int &ntip, double &dt, double fmatrix[], double &rate, double r_intervals[], int splitters[], double &tval)
+extern "C" void pathsim(int &ntip, double &dt, double fmatrix[], double &rate, double r_intervals[], int splitters[], double tval[])
 {
 	//--------- INITIALISE TREE --------------------//
 	Tree tree;
@@ -25,17 +25,17 @@ extern "C" void pathsim(int &ntip, double &dt, double fmatrix[], double &rate, d
 	//--------- INITIALISE SIM ---------------------//
 	Sim sim;
 	int fsize = sqrt(sizeof(fmatrix));
-	sim.set_values(dt, rate, fsize, fmatrix, tree);		// segfault
+	sim.set_values(dt, rate, fsize, fmatrix, tree);		
 	sim.path();
 	//----------------------------------------------//
 	
 	//---------- RETURN VALS TO R ------------------//
+	for (int i = 0; i < ntip; ++i)
+	{
+		tval[(2*i)] 	= sim.tval[i][0];
+		tval[(2*i)+1] 	= sim.tval[i][1];
+
+	}
 	//----------------------------------------------//
 
-
-
-
-	ntip = 2 * ntip;	
 }
-
-

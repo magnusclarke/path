@@ -7,9 +7,10 @@ using std::vector;
 
 class Tree
 {
-	int num_tips;			        // = length(speciators)+1 I think
 
 public:
+        int num_tips;                   // = length(speciators)+1 I think
+
 	vector<double> intervals;		// Time periods between speciation events
 	double total_time;
 	vector<int> speciators;			// Order of splitting lines
