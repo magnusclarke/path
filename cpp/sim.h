@@ -8,8 +8,11 @@ using std::vector;
 
 class Sim
 {
-	// Tree tree;
+	Tree tree;
 	int num_tips;
+	// int num_segment;
+	// vector<int> segment_steps; 			// number time steps in each segment
+	vector<int> speciators;
 	double dt;	
 	double rate; 						// BM sigma^2
 	int total_time_steps;				// total time / dt for clade	

@@ -35,27 +35,42 @@ void Sim::step_map()
 Corresponds to sim function in a2p.R */
 void Sim::path()
 {
-	// Do something
 	// append to tval: one vector of two elements, per speciation event
-	for (int i = 0; i < num_tips+1; ++i)
+	// for (int i = 0; i < num_tips+1; ++i)
+	// {
+	// 	vector<double> new_species;
+	// 	new_species.assign(2, 5);		// two traits, value=5 in example
+	// 	tval.push_back(new_species);
+	// }
+
+	for (int i = 0; i < num_tips; ++i)
 	{
-		vector<double> new_species;
-		new_species.assign(2, 5);		// two traits, value=5 in example
-		tval.push_back(new_species);
+		tval.push_back(tval[speciators[i]]);	// add to tvals a copy of the currently splitting species
+		// evolve_segment(segment_steps[i]);
 	}
 
 
-	// dt = 5 * dt;
+
 }
 
 void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], Tree &tre)
 {
 	num_tips = tre.num_tips;
+	// num_segment = num_tips-1;
+
+	speciators = tre.speciators;
 
 	fitness_size = fsize;
 	dt = r_dt;
 	rate = r_rate;
 	total_time_steps = tre.total_time / dt;
+
+	// Compute number of time steps for each segment
+	// segment_steps.assign(num_segment, 0);
+	// for (int i = 0; i < num_segment; ++i)
+	// {
+	// 	segment_steps[i] = tre.intervals[i] / dt;
+	// }
 
 	// Root trait value is in middle of fitness surface; set all to this
 	double root = fitness_size / 2;
