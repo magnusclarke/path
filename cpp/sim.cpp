@@ -45,7 +45,7 @@ void Sim::path()
 
 	int num_internal_nodes = num_tips - 1;
 
-	for (int i = 0; i < num_internal_nodes-2; ++i)
+	for (int i = 0; i < num_internal_nodes; ++i)
 	{
 		int splitting_node = speciators[i];
 		// tval.push_back(tval[splitting_node]);	//segfaults
