@@ -43,9 +43,29 @@ void Sim::path()
 	// 	tval.push_back(new_species);
 	// }
 
-	for (int i = 0; i < num_tips; ++i)
+	int num_internal_nodes = num_tips - 1;
+
+	for (int i = 0; i < num_internal_nodes-2; ++i)
 	{
-		tval.push_back(tval[speciators[i]]);	// add to tvals a copy of the currently splitting species
+		int splitting_node = speciators[i];
+		// tval.push_back(tval[splitting_node]);	//segfaults
+
+		tval.push_back(tval[0]);				// works
+	}
+
+
+
+
+	for (int i = 0; i < num_internal_nodes; ++i)
+	{
+		// std::vector<int> test;
+		// test.assign(num_internal_nodes, 0);
+		// int splitting_node = test[i];
+		// tval.push_back(tval[splitting_node]);	
+
+
+		// tval.push_back(tval[0]);				// works
+
 		// evolve_segment(segment_steps[i]);
 	}
 
@@ -59,6 +79,8 @@ void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[],
 	// num_segment = num_tips-1;
 
 	speciators = tre.speciators;
+
+	// tree = tre;
 
 	fitness_size = fsize;
 	dt = r_dt;
