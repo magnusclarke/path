@@ -6,7 +6,7 @@ ifeq ($(UNAME), Linux)
 TARGET =  Rfunc.so
 endif
 ifeq ($(UNAME), Darwin)
-TARGET = Rfunc.so
+TARGET = Rfunc_mac.so
 endif
 
 $(TARGET): sim.h sim.cpp tree.h tree.cpp Rfunc.cpp

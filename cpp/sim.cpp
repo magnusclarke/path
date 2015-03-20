@@ -73,6 +73,8 @@ void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[],
 
 	// speciators = tre.speciators;
 
+	// tree = tre;
+
 	fitness_size = fsize;
 	dt = r_dt;
 	rate = r_rate;

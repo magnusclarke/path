@@ -9,7 +9,7 @@ class Tree
 {
 
 public:
-        int num_tips;                   // = length(speciators)+1 I think
+    int num_tips;                   // = length(speciators)+1 I think
 
 	vector<double> intervals;		// Time periods between speciation events
 	double total_time;
