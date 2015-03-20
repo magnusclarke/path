@@ -11,12 +11,12 @@ extern "C" void pathsim(int &ntip, double &dt, double fmatrix[], double &rate, d
 	tree.num_traits = 2;		// two traits for now
 	tree.total_time = 0;
 	int n_interval = ntip - 1;
-	// tree.speciators.assign(n_interval, 0);
+	tree.speciators.assign(n_interval, 0);
 	// tree.intervals.assign(n_interval, 0.0);
 	for(int i=0; i<n_interval; ++i)
 	{
 		tree.total_time += r_intervals[i];
-		// tree.speciators[i] = splitters[i];	//int
+		tree.speciators[i] = splitters[i];	//int
 		// tree.intervals[i] = r_intervals[i];	//double
 	}
 	//----------------------------------------------//
@@ -25,7 +25,7 @@ extern "C" void pathsim(int &ntip, double &dt, double fmatrix[], double &rate, d
 	//--------- INITIALISE SIM ---------------------//
 	Sim sim;
 	int fsize = sqrt(sizeof(fmatrix));
-	sim.set_values(dt, rate, fsize, fmatrix, tree);		
+	sim.set_values(dt, rate, fsize, fmatrix, splitters, ntip, r_intervals);		
 	sim.path();
 	//----------------------------------------------//
 	

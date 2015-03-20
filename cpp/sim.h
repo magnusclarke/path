@@ -10,8 +10,8 @@ class Sim
 {
 	Tree tree;
 	int num_tips;
-	// int num_segment;
-	// vector<int> segment_steps; 			// number time steps in each segment
+	int num_segment;
+	vector<int> segment_steps; 			// number time steps in each segment
 	vector<int> speciators;
 	double dt;	
 	double rate; 						// BM sigma^2
@@ -41,7 +41,7 @@ public:
 
 	/* Take dt, rate, fitness matrix 1dim length, and intial fitness matrix as one
 	linear array. Then need to split that array into square matrix */
-	void set_values(double&, double&, int&, double[], Tree&); 
+	void set_values(double&, double&, int&, double[], int[], int&, double[]); 
 	/* path: use class vars, change tval; effect is whole clade
 	Corresponds to sim function in a2p.R */
 	void path();		

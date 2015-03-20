@@ -10,6 +10,7 @@ Modifies tvals as per single segment.
 Needs number of time steps for that segment */
 void Sim::evolve_segment(int &nsteps)
 {
+	tval[0][0]++;
 }
 
 /* step_segment: matches evolve fn in path.R
@@ -43,34 +44,46 @@ void Sim::path()
 	// 	tval.push_back(new_species);
 	// }
 
-	for (int i = 0; i < num_tips; ++i)
+	for (int i = 0; i < num_tips-1; ++i)		// defo should be -1
 	{
+		// speciators[i] = 0;
 		tval.push_back(tval[speciators[i]]);	// add to tvals a copy of the currently splitting species
-		// evolve_segment(segment_steps[i]);
+		// tval.push_back(tval[0]);
+		evolve_segment(segment_steps[i]);
 	}
 
 
 
 }
 
-void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], Tree &tre)
+void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], int splitters[], int &ntip, double r_intervals[])
 {
-	num_tips = tre.num_tips;
-	// num_segment = num_tips-1;
+	num_tips = ntip;
+	num_segment = num_tips-1;
 
-	speciators = tre.speciators;
+
+	speciators.assign(ntip-1, 0);			//ntip-1= number internal nodes.
+	for (int i = 0; i < num_tips-1; ++i)
+	{
+		speciators[i] = splitters[i];
+	}
+
+
+
+
+	// speciators = tre.speciators;
 
 	fitness_size = fsize;
 	dt = r_dt;
 	rate = r_rate;
-	total_time_steps = tre.total_time / dt;
+	// total_time_steps = tre.total_time / dt;
 
 	// Compute number of time steps for each segment
-	// segment_steps.assign(num_segment, 0);
-	// for (int i = 0; i < num_segment; ++i)
-	// {
-	// 	segment_steps[i] = tre.intervals[i] / dt;
-	// }
+	segment_steps.assign(num_segment, 0);
+	for (int i = 0; i < num_segment; ++i)
+	{
+		segment_steps[i] = r_intervals[i] / dt;
+	}
 
 	// Root trait value is in middle of fitness surface; set all to this
 	double root = fitness_size / 2;
