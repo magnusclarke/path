@@ -37,48 +37,22 @@ Corresponds to sim function in a2p.R */
 void Sim::path()
 {
 	// append to tval: one vector of two elements, per speciation event
-	// for (int i = 0; i < num_tips+1; ++i)
-	// {
-	// 	vector<double> new_species;
-	// 	new_species.assign(2, 5);		// two traits, value=5 in example
-	// 	tval.push_back(new_species);
-	// }
-
-	for (int i = 0; i < num_tips-1; ++i)		// defo should be -1
+	for (int i = 0; i < tree.num_tips-1; ++i)
 	{
-		// speciators[i] = 0;
-		tval.push_back(tval[speciators[i]]);	// add to tvals a copy of the currently splitting species
-		// tval.push_back(tval[0]);
+		tval.push_back(tval[tree.speciators[i]]);	// add to tvals a copy of the currently splitting species
 		evolve_segment(segment_steps[i]);
 	}
-
-
-
 }
 
-void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], int splitters[], int &ntip, double r_intervals[])
+void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], double r_intervals[], Tree &t)
 {
-	num_tips = ntip;
-	num_segment = num_tips-1;
-
-
-	speciators.assign(ntip-1, 0);			//ntip-1= number internal nodes.
-	for (int i = 0; i < num_tips-1; ++i)
-	{
-		speciators[i] = splitters[i];
-	}
-
-
-
-
-	// speciators = tre.speciators;
-
-	// tree = tre;
+	tree = t;
+	num_segment = tree.num_tips-1;
 
 	fitness_size = fsize;
 	dt = r_dt;
 	rate = r_rate;
-	// total_time_steps = tre.total_time / dt;
+	total_time_steps = tree.total_time / dt;
 
 	// Compute number of time steps for each segment
 	segment_steps.assign(num_segment, 0);
@@ -91,7 +65,7 @@ void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[],
 	double root = fitness_size / 2;
 	vector<double> root_species;
 	root_species.assign(2, root);		// two traits
-	tval.assign(1, root_species);	// initially one species
+	tval.assign(1, root_species);		// initially one species
 
 	// Get fitness matrix correct size
 	vector<double> fitness_row;

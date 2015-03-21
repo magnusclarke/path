@@ -4,11 +4,12 @@
 #include "tree.h"
 #include "sim.h"
 
-extern "C" void pathsim(int &ntip, double &dt, double fmatrix[], double &rate, double r_intervals[], int splitters[], double tval[])
+extern "C" void pathsim(int &ntip, double &dt, int &fsize, double fmatrix[], double &rate, double r_intervals[], int splitters[], double tval[])
 {
 	//--------- INITIALISE TREE --------------------//
 	Tree tree;
 	tree.num_traits = 2;		// two traits for now
+	tree.num_tips = ntip;
 	tree.total_time = 0;
 	int n_interval = ntip - 1;
 	tree.speciators.assign(n_interval, 0);
@@ -24,8 +25,8 @@ extern "C" void pathsim(int &ntip, double &dt, double fmatrix[], double &rate, d
 
 	//--------- INITIALISE SIM ---------------------//
 	Sim sim;
-	int fsize = sqrt(sizeof(fmatrix));
-	sim.set_values(dt, rate, fsize, fmatrix, splitters, ntip, r_intervals);		
+	// int fsize = sqrt(sizeof(fmatrix));
+	sim.set_values(dt, rate, fsize, fmatrix, r_intervals, tree);		
 	sim.path();
 	//----------------------------------------------//
 	
