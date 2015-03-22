@@ -6,7 +6,6 @@ offset = bits / 2 				# Put zero in centre of plot
 
 rate = bits/150
 
-
 gen_species = function(n)
 {
 	lspecies = list()

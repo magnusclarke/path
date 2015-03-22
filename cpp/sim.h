@@ -29,7 +29,7 @@ class Sim
 	/* step_species: matches step_traits function in path.R
 	do evolutionary step on one species, accepting based on 
 	fitness matrix. */
-	void step_species();
+	void step_species(int&);
 	/* Update fitness map. For BM the fitness map has every 
 	element equal to 1, and doesn't change. */
 	void step_map();

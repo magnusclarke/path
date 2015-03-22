@@ -2,6 +2,7 @@
 #include "tree.h"
 #include <vector>
 #include <cmath>
+#include <random>
 
 using std::vector;
 
@@ -10,20 +11,74 @@ Modifies tvals as per single segment.
 Needs number of time steps for that segment */
 void Sim::evolve_segment(int &nsteps)
 {
-	tval[0][0]++;
+	for (int step = 0; step < nsteps; ++step)
+	{
+		step_segment();
+	}
 }
 
 /* step_segment: matches evolve fn in path.R
 Updates tval, AND fitness_map */
 void Sim::step_segment()
 {
+	int x = tval.size();
+
+
+
+
+	// for (int species = 0; species < x-25; ++species)
+	for (int species = 0; species < x; ++species)
+	{
+		step_species(species);
+	}
+	step_map();		// Update fitness map
 }
 
 /* step_species: matches step_traits function in path.R
 do evolutionary step on one species, accepting based on 
 fitness matrix. */
-void Sim::step_species()
+void Sim::step_species(int &species)
 {
+	/* Create a trial evolutionary step, and accept with likelihood
+	proportional to fitness of new traits. */
+	bool accept = false;
+	while(accept==false)
+	{
+		accept = false;
+		// change is a vector of two doubles, each 1 for now. 
+		// They should be drawn from a normal dist!!
+		vector<double> change;
+
+		change.assign(2, 1);						// should be = rate * rnorm(2);
+		change[0] = rand() / 500000000;		// random uniform-ish between 0 and 1 ish
+		change[1] = rand() / 500000000;		// should change: rand() is considered harmful
+		vector<double> new_state;
+		new_state.assign(2, 1);	
+		new_state[0] = tval[species][0] + change[0];
+		new_state[1] = tval[species][1] + change[1];
+
+		// tval[species] = new_state;
+		// accept = true;
+
+		// Accept only if new state is within fitness matrix boundries
+		if (new_state[0] > -1 && new_state[1] > -1 && new_state[0] < fitness_size && new_state[1] < fitness_size)
+		// if (new_state[0] > -1 && new_state[1] > -1 && new_state[0] < 100 && new_state[1] < 100)
+		{
+			// double new_fitness = fitness[new_state[0]][new_state[1]];
+			double new_fitness = 1;
+
+			// Accept with likelihood = fitness
+			// Temporarily likelihood = 1. Should be if(new_fitness > runif(1)).
+			if(new_fitness > 0)
+			{
+				accept = true;
+			// }
+			// if(accept==true)
+			// {
+				tval[species] = new_state;
+			}
+		}
+	}	
 }
 
 /* Update fitness map. For BM the fitness map has every 
@@ -36,12 +91,18 @@ void Sim::step_map()
 Corresponds to sim function in a2p.R */
 void Sim::path()
 {
+	// tval[0][0] = tval.size();
+
 	// append to tval: one vector of two elements, per speciation event
-	for (int i = 0; i < tree.num_tips-1; ++i)
+	for (int i = 0; i < num_segment; ++i)
 	{
-		tval.push_back(tval[tree.speciators[i]]);	// add to tvals a copy of the currently splitting species
+		int x = tree.speciators[i];
+
+		tval.push_back(tval[x]);	// add to tvals a copy of the currently splitting species
 		evolve_segment(segment_steps[i]);
 	}
+
+
 }
 
 void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], double r_intervals[], Tree &t)

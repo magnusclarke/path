@@ -1,8 +1,11 @@
 #include <math.h>
 #include <vector>
+#include <random>
 
 #include "tree.h"
 #include "sim.h"
+
+
 
 extern "C" void pathsim(int &ntip, double &dt, int &fsize, double fmatrix[], double &rate, double r_intervals[], int splitters[], double tval[])
 {
@@ -37,6 +40,9 @@ extern "C" void pathsim(int &ntip, double &dt, int &fsize, double fmatrix[], dou
 		tval[(2*i)+1] 	= sim.tval[i][1];
 
 	}
+	
+			// tval[0] 	= rand();
+
 	//----------------------------------------------//
 
 }
