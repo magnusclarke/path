@@ -1,14 +1,13 @@
-#include "sim.h"
-#include "tree.h"
 #include <vector>
 #include <cmath>
 #include <random>
+#include "sim.h"
+#include "tree.h"
 
 using std::vector;
 
-/* evolve_segment: matches path in path.R.
-Modifies tvals as per single segment. 
-Needs number of time steps for that segment */
+/* 	Modify trait values and fitness mapfor segment between speciation
+	events. Needs number of time steps within that segment 	*/
 void Sim::evolve_segment(int &nsteps)
 {
 	for (int step = 0; step < nsteps; ++step)
@@ -17,26 +16,19 @@ void Sim::evolve_segment(int &nsteps)
 	}
 }
 
-/* step_segment: matches evolve fn in path.R
-Updates tval, AND fitness_map */
+/* 	Update trait values and fitness map for one time step. 	*/
 void Sim::step_segment()
 {
-	int x = tval.size();
-
-
-
-
-	// for (int species = 0; species < x-25; ++species)
-	for (int species = 0; species < x; ++species)
+	int num_species = tval.size();
+	for (int species = 0; species < num_species; ++species)
 	{
 		step_species(species);
 	}
 	step_map();		// Update fitness map
 }
 
-/* step_species: matches step_traits function in path.R
-do evolutionary step on one species, accepting based on 
-fitness matrix. */
+/* 	Do one evolutionary step on one species  
+	This is where all the runtime is spent!	 */
 void Sim::step_species(int &species)
 {
 	/* Create a trial evolutionary step, and accept with likelihood
@@ -49,20 +41,16 @@ void Sim::step_species(int &species)
 		// They should be drawn from a normal dist!!
 		vector<double> change;
 
-		change.assign(2, 1);						// should be = rate * rnorm(2);
+		change.assign(2, 1);	
 		change[0] = rand() / 500000000;		// random uniform-ish between 0 and 1 ish
-		change[1] = rand() / 500000000;		// should change: rand() is considered harmful
+		change[1] = rand() / 500000000;		// should change: rand() is considered harmful and this should be a normal dist.
 		vector<double> new_state;
 		new_state.assign(2, 1);	
 		new_state[0] = tval[species][0] + change[0];
 		new_state[1] = tval[species][1] + change[1];
 
-		// tval[species] = new_state;
-		// accept = true;
-
 		// Accept only if new state is within fitness matrix boundries
 		if (new_state[0] > -1 && new_state[1] > -1 && new_state[0] < fitness_size && new_state[1] < fitness_size)
-		// if (new_state[0] > -1 && new_state[1] > -1 && new_state[0] < 100 && new_state[1] < 100)
 		{
 			// double new_fitness = fitness[new_state[0]][new_state[1]];
 			double new_fitness = 1;
@@ -72,37 +60,29 @@ void Sim::step_species(int &species)
 			if(new_fitness > 0)
 			{
 				accept = true;
-			// }
-			// if(accept==true)
-			// {
 				tval[species] = new_state;
 			}
 		}
 	}	
 }
 
-/* Update fitness map. For BM the fitness map has every 
+/*	Update fitness map. For BM the fitness map has every 
 element equal to 1, and doesn't change. */
 void Sim::step_map()
 {
 }
 
-/* path: use class vars, change tval; effect is whole clade
-Corresponds to sim function in a2p.R */
+/*	Perform simulation on whole tree, modifying object variable tvals, 
+	and lengthening tvals to length = number tree tips. A vector of 
+	two doubles is appended to tval per speciation event  	*/
 void Sim::path()
 {
-	// tval[0][0] = tval.size();
-
-	// append to tval: one vector of two elements, per speciation event
 	for (int i = 0; i < num_segment; ++i)
 	{
 		int x = tree.speciators[i];
-
-		tval.push_back(tval[x]);	// add to tvals a copy of the currently splitting species
+		tval.push_back(tval[x]);
 		evolve_segment(segment_steps[i]);
 	}
-
-
 }
 
 void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], double r_intervals[], Tree &t)
@@ -133,7 +113,7 @@ void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[],
 	fitness_row.assign(fsize, 1);
 	fitness.assign(fsize, fitness_row);
 
-	// Make square matrix with std::vector from linear array from R
+	// Make square 'fitness' matrix with std::vector from linear array from R
 	for(int i=0; i<fitness_size; ++i)
 	{
 		for(int j=0; j<fitness_size; ++j)
