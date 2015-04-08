@@ -10,6 +10,7 @@ using std::vector;
 std::random_device rd;
 std::mt19937 gen(rd());
 std::normal_distribution<> d(0,1);	// concievably faster to gen all rnums at outset, then use.
+std::uniform_real_distribution<> ud(0, 1);	// random number from uniform dist between 0 and 1.
 
 /* 	Modify trait values and fitness mapfor segment between speciation
 	events. Needs number of time steps within that segment. 	
@@ -57,12 +58,12 @@ void Sim::step_species(int &species)
 		// Accept only if new state is within fitness matrix boundries
 		if (new_state[0] > -1 && new_state[1] > -1 && new_state[0] < fitness_size && new_state[1] < fitness_size)
 		{
-			// double new_fitness = fitness[new_state[0]][new_state[1]];
-			double new_fitness = 1;
+			int ns0 = new_state[0];
+			int ns1 = new_state[1];
+			double new_fitness = fitness[ns0][ns1];		// fn to change fitness. Currently no change.
 
-			// Accept with likelihood = fitness
-			// Temporarily likelihood = 1. Should be if(new_fitness > runif(1)).
-			if(new_fitness > 0)
+			// Accept new state with likelihood = fitness
+			if(new_fitness > ud(gen))
 			{
 				accept = true;
 				tval[species] = new_state;
