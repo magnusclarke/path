@@ -5,11 +5,15 @@ if(.Platform$pkgType == "source")		dyn.load("cpp/Rfunc.so")
 tre = rUMT(5)
 t = ape2peth(tre)
 
-# I think the initial speed difficulty is going to be in 
+# Use consistent tree
+# t$times = c(1.686388710, 0.175231621, 0.535529443, 0.008047728)
+# t$splitting_nodes = c(1,1,1,2)
+
+# The main speed constraint is in 
 # the time to copy the fitness matrix for each simulation.
-# This will need to be stored in C++ and kept, not copied, 
+# This needs to be stored in C++ and kept, not copied, 
 # between simulations.
-run = function(tree, fmatrix=rep(1, 200^2), dt=0.1, rate=1)
+run = function(tree, fmatrix=rep(1, 20^2), dt=0.1, rate=1)
 {
 	num_tips = length(tree$data_order)
 	splitting_nodes = tree$splitting_nodes - 1 		# c counts from 0!!
@@ -32,9 +36,9 @@ run = function(tree, fmatrix=rep(1, 200^2), dt=0.1, rate=1)
 
 # system.time(replicate(1e3, run(t, dt=0.01)))
 
-print(run(t))
+# print(run(t))
 
-reps=1e3
+reps=1e4
 x	= t( replicate(reps, run(t)$tval[,1]))
 print( cor(x) )
 print( cov2cor(vcv.phylo(tre)) )

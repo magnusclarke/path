@@ -6,8 +6,14 @@
 
 using std::vector;
 
+/* 	RNG. Declaring this inside the looped function would cost the earth in time. */
+std::random_device rd;
+std::mt19937 gen(rd());
+std::normal_distribution<> d(0,1);	// concievably faster to gen all rnums at outset, then use.
+
 /* 	Modify trait values and fitness mapfor segment between speciation
-	events. Needs number of time steps within that segment 	*/
+	events. Needs number of time steps within that segment. 	
+	This is where all the runtime is spent!	 */
 void Sim::evolve_segment(int &nsteps)
 {
 	for (int step = 0; step < nsteps; ++step)
@@ -27,23 +33,22 @@ void Sim::step_segment()
 	step_map();		// Update fitness map
 }
 
-/* 	Do one evolutionary step on one species  
-	This is where all the runtime is spent!	 */
+/* 	Do one evolutionary step on one species  */
 void Sim::step_species(int &species)
 {
+
 	/* Create a trial evolutionary step, and accept with likelihood
 	proportional to fitness of new traits. */
 	bool accept = false;
+
 	while(accept==false)
 	{
 		accept = false;
-		// change is a vector of two doubles, each 1 for now. 
-		// They should be drawn from a normal dist!!
-		vector<double> change;
+		vector<double> change;		// change is a vector of two doubles; n doubles for n traits.
 
 		change.assign(2, 1);	
-		change[0] = rand() / 500000000;		// random uniform-ish between 0 and 1 ish
-		change[1] = rand() / 500000000;		// should change: rand() is considered harmful and this should be a normal dist.
+		change[0] = d(gen);		// random number drawn from normal distribution
+		change[1] = d(gen);
 		vector<double> new_state;
 		new_state.assign(2, 1);	
 		new_state[0] = tval[species][0] + change[0];
@@ -85,6 +90,7 @@ void Sim::path()
 	}
 }
 
+// Doesn't use up runtime!!
 void Sim::set_values(double &r_dt, double &r_rate, int &fsize, double fmatrix[], double r_intervals[], Tree &t)
 {
 	tree = t;
